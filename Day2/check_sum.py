@@ -28,11 +28,27 @@ def solve_problem2():
     with open('data.csv') as csv_data:
         reader = csv.reader(csv_data)
         string_list = list(reader)
-
-        j = 0
         for i in range(len(string_list)):
-            cur_string = string_list[i]
-            for n in range(len(string_list[i])):
+            for j in range(len(string_list)):
+                if (j == i):
+                    continue
+                cur_string = string_list[i][0]
+                compared_string = string_list[j][0]
+                zipped = zip(cur_string, compared_string)
+                errors = 0
+                first_error = None
+                index = 0
+                for n in list(zipped):
+                    if (not (n[0] == n[1])):
+                        errors += 1
+                        if (errors == 1):
+                            first_error = index
+                    index += 1
+                if errors == 1:
+                    solution = cur_string[:first_error] + cur_string[(first_error+1):]
+                    return solution
+
+
 
         
             
