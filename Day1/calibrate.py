@@ -10,24 +10,33 @@ def calculate(mode=1):
     
     if(mode==1):
         with open('data.csv') as csv_data:
-            sum = 0 # start value for sum
+            total = 0
             reader = csv.reader(csv_data)
             for row in reader:
-                sum += int(row[0])
+                total += int(row[0])
+            return total
 
-            print(sum)
+    def file_to_list(file_name):
+        with open(file_name) as csv_data:
+            values = []
+            reader = csv.reader(csv_data)
+            for row in reader:
+                values.append(int(row[0]))
+            return values
 
     if(mode==2):
-        with open('data.csv') as csv_data:
-            sum = 0
-            dict_of_sums = {}
-            reader = csv.reader(csv_data)
-            not_complete = True
-            while not_complete:
-                for row in reader:
-                    sum += int(row[0])
-                    if sum in dict_of_sums:
-                        print(sum)
-                        not_complete = False
-                    else:
-                        dict_of_sums[sum]= True
+        values = file_to_list('data.csv')
+        possible_sums = set()
+        for i in range(len(values)):
+            index = i
+            for n in range(len(values)):
+                if (index == len(values) - 1):
+                    index = 0
+                elif(index == i - 1):
+                    break
+                total = sum(possible_sums) + values[i]
+                print(total)
+                if total in possible_sums:
+                    return total
+                else:
+                    possible_sums.add(total)
