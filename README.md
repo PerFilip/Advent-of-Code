@@ -1,1 +1,1 @@
-Solutions to advent of code challenges
+Attempts to solutions to advent of code challenges
