@@ -5,38 +5,41 @@ import time
 
 
 def solve_1():
-    sleep_time = dict()
-    with open('data.csv') as data:
-        reader = csv.reader(data)
-        cur_guard = " "
-        fall_asleep_row = []
-        sleeping = False
-        for row in reader:
-            if str(row[4]) == 'Guard':
-                if sleeping:
-                    print(fall_asleep_row[0:4])
-                    sleep_time[cur_guard]+= minute_difference(fall_asleep_row[0:4], row[0:4])
-                    sleeping = False
-                cur_guard = str(row[5])
-                if not (cur_guard in sleep_time):
-                    sleep_time[cur_guard] = 0
-                
-            elif str(row[4]) == 'falls':
-                if not sleeping:
-                    fall_asleep_row = row
-                    sleeping = True
-            elif str(row[4]) == 'wakes':
-                if sleeping:
-                    sleep_time[cur_guard]+= minute_difference(fall_asleep_row[0:4], row[0:4])
-                    sleeping = False
-    return max(sleep_time)
+    data_list = ordered_data_list('data.csv')
+    sleep_times = dict()
+    cur_guard = ''
+    sleep_start_date = None
+    for entry in data_list:
+        if entry[1] == 'Guard':
+            if entry[2]not in sleep_times:
+                sleep_times[entry[2]] = 0
+            cur_guard = entry[2]
+        if entry[1] == 'falls':
+            sleep_start_date = entry[0]
+        if entry[1] == 'wakes':
+            d1 = time.mktime(sleep_start_date.timetuple())
+            d2 = time.mktime(entry[0].timetuple())
+            sleep_times[cur_guard] += (d2 - d1)
+    sleepy_guard = max(sleep_times)
+    sleep_minutes = [0]*60
+    for n in range(1000):
+        if data_list[n][2] == sleepy_guard:
+            sleep_minutes[data_list[n+1][0].minute:data_list[n+2][0].minute]
 
-def minute_difference(date1, date2):
-    d1 = datetime(1518 , int(date1[0]), int(date1[1]), int(date1[2]), int(date1[3]))
-    d2 = datetime(1518 , int(date2[0]), int(date2[1]), int(date2[2]), int(date2[3]))
-    d1_ts = time.mktime(d1.timetuple())
-    d2_ts = time.mktime(d2.timetuple())
-    return int(d2_ts-d1_ts) / 60
+
+
+
+def ordered_data_list(filename):
+    data_list = []
+    with open(filename) as data:
+        reader = csv.reader(data)
+        for row in reader:
+            d = datetime(1518, int(row[0]), int(row[1]), int(row[2]), int(row[3]))
+            entry = [d, str(row[4]), str(row[5])]
+            data_list.append(entry)
+    data_list.sort(key=lambda x: x[0])
+    return data_list
+
 
 def solve_2():
     return 1
