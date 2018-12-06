@@ -22,10 +22,20 @@ def solve_1():
             sleep_times[cur_guard] += (d2 - d1)
     sleepy_guard = max(sleep_times)
     sleep_minutes = [0]*60
-    for n in range(1000):
+    n = 0
+    while n < 1000:
         if data_list[n][2] == sleepy_guard:
-            sleep_minutes[data_list[n+1][0].minute:data_list[n+2][0].minute]
-
+            n += 1
+            while not (data_list[n][1]=='Guard'):
+                start_minute = data_list[n][0].minute
+                stop_minute = data_list[n+1][0].minute
+                minutes_slept = abs(stop_minute - start_minute)
+                for m in range(minutes_slept):
+                    sleep_minutes[start_minute + m] += 1
+                n += 2
+        else:
+            n += 1
+    return str(sleep_minutes.index(max(sleep_minutes))) + ', ' + sleepy_guard
 
 
 
