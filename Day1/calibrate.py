@@ -27,16 +27,11 @@ def calculate(mode=1):
     if(mode==2):
         values = file_to_list('data.csv')
         possible_sums = set()
-        for i in range(len(values)):
-            index = i
-            for n in range(len(values)):
-                if (index == len(values) - 1):
-                    index = 0
-                elif(index == i - 1):
-                    break
-                total = sum(possible_sums) + values[i]
-                print(total)
-                if total in possible_sums:
-                    return total
+        cur_sum = 0
+        while True:
+            for i in values:
+                cur_sum += i
+                if cur_sum not in possible_sums:
+                    possible_sums.add(cur_sum)
                 else:
-                    possible_sums.add(total)
+                    return cur_sum
