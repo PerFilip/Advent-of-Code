@@ -52,4 +52,28 @@ def ordered_data_list(filename):
 
 
 def solve_2():
+    data_list = ordered_data_list('data.csv')
+    # find all guards
+    guard_list = []
+    for entry in data_list:
+        if (entry[1] == 'Guard') and (entry[2] not in guard_list):
+            guard_list.append(entry[2])
+    # Solve puzzle
+    fave_minute = dict()
+    for guard in guard_list:
+        sleep_minutes = [0]*60
+        n = 0
+        while n < 1000:
+            if data_list[n][2] == guard:
+                n += 1
+                while not (data_list[n][1]=='Guard'):
+                    start_minute = data_list[n][0].minute
+                    stop_minute = data_list[n+1][0].minute
+                    minutes_slept = abs(stop_minute - start_minute)
+                    for m in range(minutes_slept):
+                        sleep_minutes[start_minute + m] += 1
+                    n += 2
+            else:
+                n += 1
+        fave_minute[guard] = [sleep_minutes.index(max(sleep_minutes)), max(sleep_minutes)]
     return 1
